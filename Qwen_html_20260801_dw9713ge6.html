@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>💰 ФинТрек</title>
+<style>
+:root{
+  --bg:#05070d;--bg2:#0b1020;--bg3:#141a2e;--card:#1a2138;--card2:#232b47;
+  --border:#2a3352;--text:#e8ecf7;--muted:#7a85a8;
+  --accent:#6c8cff;--accent2:#a878ff;--green:#3dd68c;--red:#ff5c7a;
+  --amber:#ffb547;--purple:#b78aff;--cyan:#4fd1c5;--pink:#ff7eb6;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:84px;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%,rgba(108,140,255,.15),transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 30%,rgba(168,120,255,.12),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 95%,rgba(61,214,140,.08),transparent 60%);
+}
+.wrap{max-width:1140px;margin:0 auto;padding:18px}
+
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 0 22px;gap:12px;flex-wrap:wrap}
+.logo{font-size:26px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+.logo-grad{background:linear-gradient(135deg,#6c8cff 0%,#a878ff 50%,#ff7eb6 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hdr-sub{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
+.hdr-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bot-status{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 12px;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
+}
+.bot-status:hover{border-color:var(--accent)}
+.bot-dot{width:8px;height:8px;border-radius:50%;background:#555}
+.bot-dot.on{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
+.bot-dot.err{background:var(--red)}
+.bot-dot.wait{background:var(--amber)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:22px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  padding:10px 16px;border-radius:12px;cursor:pointer;font-size:13px;
+  font-weight:600;white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.tab:hover{color:var(--text)}
+.tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(108,140,255,.3)}
+
+/* PAGES */
+.page{display:none;animation:fadeUp .35s ease}
+.page.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* CARDS */
+.card{
+  background:linear-gradient(180deg,var(--card) 0%,rgba(26,33,56,.6) 100%);
+  border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:16px;
+  backdrop-filter:blur(10px);
+}
+.card h2{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h2 .emoji{font-size:22px}
+.hint{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}
+
+/* JARS */
+.jars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.jar{
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:18px;position:relative;overflow:hidden;transition:all .2s;
+}
+.jar:hover{transform:translateY(-2px);border-color:var(--accent)}
+.jar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.jar.i::before{background:linear-gradient(90deg,var(--green),var(--cyan))}
+.jar.s::before{background:linear-gradient(90deg,var(--amber),var(--pink))}
+.jar.t::before{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.jar-ico{font-size:28px;margin-bottom:4px}
+.jar-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.jar-pct{font-size:10px;padding:2px 6px;background:rgba(255,255,255,.06);border-radius:6px;color:var(--muted)}
+.jar-val{font-size:26px;font-weight:800;margin:8px 0 4px;letter-spacing:-.5px}
+.jar.i .jar-val{color:var(--green)}
+.jar.s .jar-val{color:var(--amber)}
+.jar.t .jar-val{color:var(--accent)}
+.jar-cnt{font-size:11px;color:var(--muted)}
+
+/* FORMS */
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);
+  padding:12px 14px;border-radius:11px;font-size:14px;font-family:inherit;
+  transition:all .2s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,140,255,.15)}
+.fg textarea{resize:vertical;min-height:60px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  border:none;padding:12px 20px;border-radius:11px;cursor:pointer;
+  font-size:14px;font-weight:600;font-family:inherit;transition:all .15s;
+  box-shadow:0 4px 14px rgba(108,140,255,.25);
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,140,255,.4)}
+.btn:active{transform:translateY(0)}
+.btn2{background:var(--card);border:1px solid var(--border);color:var(--text);box-shadow:none}
+.btn2:hover{border-color:var(--accent);box-shadow:none}
+.btn-r{background:linear-gradient(135deg,var(--red),#d63355);box-shadow:0 4px 14px rgba(255,92,122,.25)}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:9px}
+
+/* ENTRIES */
+.list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;padding-right:3px}
+.list::-webkit-scrollbar{width:5px}
+.list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.ent{
+  background:var(--bg3);border:1px solid var(--border);border-radius:13px;
+  padding:13px 14px;cursor:pointer;transition:all .15s;
+  display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;
+}
+.ent:hover{border-color:var(--accent);background:var(--card2)}
+.ent-ico{
+  width:38px;height:38px;border-radius:10px;display:flex;
+  align-items:center;justify-content:center;font-size:17px;flex-shrink:0;
+}
+.ent.inc .ent-ico{background:rgba(61,214,140,.12)}
+.ent.exp .ent-ico{background:rgba(255,92,122,.12)}
+.ent.inv .ent-ico{background:rgba(183,138,255,.12)}
+.ent-body{min-width:0}
+.ent-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ent-meta{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.badge{
+  display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+}
+.badge.inc{background:rgba(61,214,140,.15);color:var(--green)}
+.badge.exp{background:rgba(255,92,122,.15);color:var(--red)}
+.badge.inv{background:rgba(183,138,255,.15);color:var(--purple)}
+.ent-amt{font-weight:700;font-size:15px;white-space:nowrap}
+.ent.inc .ent-amt{color:var(--green)}
+.ent.exp .ent-amt{color:var(--red)}
+.ent.inv .ent-amt{color:var(--purple)}
+.empty{text-align:center;padding:30px 10px;color:var(--muted);font-size:13px;line-height:1.6}
+
+/* SEARCH */
+.sbox{position:relative;margin-bottom:12px}
+.sbox input{padding-left:38px}
+.sbox::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:13px;z-index:1}
+.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:13px}
+.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.stat-v{font-size:20px;font-weight:800;margin-top:4px}
+
+/* FORECAST */
+.fc-box{
+  background:linear-gradient(135deg,#6c8cff 0%,#a878ff 50%,#ff7eb6 100%);
+  border-radius:18px;padding:24px;color:#fff;margin-top:18px;
+  box-shadow:0 10px 40px rgba(108,140,255,.3);
+}
+.fc-box h3{color:#fff;margin-bottom:8px;font-size:16px}
+.fc-date{font-size:32px;font-weight:800;margin:8px 0;letter-spacing:-.5px}
+.fc-list{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.fc-item{
+  background:rgba(255,255,255,.12);backdrop-filter:blur(10px);
+  padding:10px 13px;border-radius:10px;display:flex;
+  justify-content:space-between;align-items:center;font-size:13px;gap:10px;
+}
+.fc-item b{font-size:14px;white-space:nowrap}
+
+/* MODAL */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(5,7,13,.8);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;z-index:100;padding:16px;
+}
+.modal-bg.on{display:flex}
+.modal{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
+}
+.modal h2{margin-bottom:16px}
+.x-btn{float:right;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px}
+.x-btn:hover{color:var(--text)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid var(--border);padding:12px 20px;
+  border-radius:12px;z-index:200;font-size:13px;font-weight:500;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);opacity:0;transition:all .3s;pointer-events:none;
+  max-width:90vw;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--green)}
+.toast.err{border-color:var(--red)}
+
+/* MOBILE NAV */
+.mnav{
+  position:fixed;bottom:0;left:0;right:0;background:rgba(11,16,32,.92);
+  backdrop-filter:blur(16px);border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));
+  z-index:50;
+}
+.mnav button{
+  background:none;border:none;color:var(--muted);font-size:10px;
+  padding:6px 10px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:2px;font-family:inherit;font-weight:600;transition:color .2s;
+}
+.mnav button.on{color:var(--accent)}
+.mnav .mi{font-size:20px}
+
+/* TG LOG */
+.tg-log{max-height:200px;overflow-y:auto;font-family:'SF Mono',Monaco,monospace;font-size:11px;background:var(--bg2);border-radius:10px;padding:10px;border:1px solid var(--border)}
+.tg-log div{padding:3px 0;color:var(--muted);border-bottom:1px dashed rgba(255,255,255,.04)}
+.tg-log div:last-child{border:none}
+.tg-log .in{color:var(--cyan)}
+.tg-log .out{color:var(--green)}
+.tg-log .err{color:var(--red)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .wrap{padding:12px}
+  .jars{grid-template-columns:1fr}
+  .jar-val{font-size:24px}
+  .ent{grid-template-columns:34px 1fr;gap:10px}
+  .ent-amt{grid-column:1/-1;text-align:right;margin-top:-2px}
+  .fc-date{font-size:26px}
+  .logo{font-size:22px}
+  .card{padding:18px}
+}
+@media(min-width:769px){.mnav{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="logo">💰 <span class="logo-grad">ФинТрек</span></div>
+    <div class="hdr-sub" id="hdrDate"></div>
+  </div>
+  <div class="hdr-right">
+    <div class="bot-status" id="botStatus" onclick="goTab('tg')" title="Статус Telegram-бота">
+      <span class="bot-dot" id="botDot"></span>
+      <span id="botLabel">Бот выкл</span>
+    </div>
+    <button class="btn btn-sm btn2" onclick="exportData()" title="Скачать бэкап">📥</button>
+    <label class="btn btn-sm btn2" style="cursor:pointer" title="Загрузить бэкап">📤<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs">
+  <button class="tab on" data-p="dash">📊 Главная</button>
+  <button class="tab" data-p="add">➕ Добавить</button>
+  <button class="tab" data-p="list">📝 Записи</button>
+  <button class="tab" data-p="plan">🔮 Прогноз</button>
+  <button class="tab" data-p="tg">🤖 Telegram</button>
+  <button class="tab" data-p="info">ℹ️ О системе</button>
+</div>
+
+<!-- ====== ГЛАВНАЯ ====== -->
+<div class="page on" id="p-dash">
+  <div class="jars">
+    <div class="jar i">
+      <div class="jar-ico">📈</div>
+      <div class="jar-lbl">Инвестиции <span class="jar-pct">33%</span></div>
+      <div class="jar-val" id="j-inv">0 ₽</div>
+      <div class="jar-cnt" id="jc-inv">0 операций</div>
+    </div>
+    <div class="jar s">
+      <div class="jar-ico">🛋️</div>
+      <div class="jar-lbl">На диван <span class="jar-pct">10%</span></div>
+      <div class="jar-val" id="j-sofa">0 ₽</div>
+      <div class="jar-cnt" id="jc-sofa">0 операций</div>
+    </div>
+    <div class="jar t">
+      <div class="jar-ico">💸</div>
+      <div class="jar-lbl">Траты <span class="jar-pct">57%</span></div>
+      <div class="jar-val" id="j-spend">0 ₽</div>
+      <div class="jar-cnt" id="jc-spend">0 операций</div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Доходы</div><div class="stat-v" id="s-inc" style="color:var(--green)">0 ₽</div></div>
+    <div class="stat"><div class="stat-l">Траты</div><div class="stat-v" id="s-exp" style="color:var(--red)">0 ₽</div></div>
+    <div class="stat"><div class="stat-l">Вложения</div><div class="stat-v" id="s-inv" style="color:var(--purple)">0 ₽</div></div>
+    <div class="stat"><div class="stat-l">Капитал</div><div class="stat-v" id="s-all" style="color:var(--cyan)">0 ₽</div></div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">⚡</span>Быстро добавить</h2>
+    <div class="row">
+      <div class="fg">
+        <label>Тип</label>
+        <select id="q-type" onchange="toggleQFrom()">
+          <option value="income">💰 Доход</option>
+          <option value="expense">💸 Трата</option>
+          <option value="invest">📊 Вложение</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Сумма ₽</label>
+        <input type="number" id="q-amt" placeholder="10000" step="0.01" inputmode="decimal">
+      </div>
+      <div class="fg">
+        <label>Дата</label>
+        <input type="date" id="q-date">
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg" id="q-from-w" style="display:none">
+        <label>Откуда взять</label>
+        <select id="q-from">
+          <option value="spend">💸 Траты</option>
+          <option value="inv">📈 Инвестиции</option>
+          <option value="sofa">🛋️ На диван</option>
+        </select>
+      </div>
+      <div class="fg" style="grid-column:1/-1">
+        <label>Описание</label>
+        <input type="text" id="q-note" placeholder="ЗП, Продукты, Проект X...">
+      </div>
+    </div>
+    <button class="btn" onclick="addEntry()">✅ Добавить</button>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">🕐</span>Последние операции</h2>
+    <div class="list" id="recentList"></div>
+  </div>
+</div>
+
+<!-- ====== ДОБАВИТЬ ====== -->
+<div class="page" id="p-add">
+  <div class="card">
+    <h2><span class="emoji">➕</span>Новая запись</h2>
+    <div class="row">
+      <div class="fg">
+        <label>Тип операции</label>
+        <select id="a-type" onchange="toggleAFrom()">
+          <option value="income">💰 Доход</option>
+          <option value="expense">💸 Трата</option>
+          <option value="invest">📊 Вложение в доход</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Сумма (₽)</label>
+        <input type="number" id="a-amt" placeholder="50000" step="0.01" inputmode="decimal">
+      </div>
+      <div class="fg">
+        <label>Дата</label>
+        <input type="date" id="a-date">
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg" id="a-from-w" style="display:none">
+        <label>Из какой копилки</label>
+        <select id="a-from">
+          <option value="spend">💸 Траты</option>
+          <option value="inv">📈 Инвестиции</option>
+          <option value="sofa">🛋️ На диван</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Категория</label>
+        <select id="a-cat">
+          <option value="">— не выбрана —</option>
+          <option value="salary">💼 Зарплата</option>
+          <option value="freelance">💻 Фриланс</option>
+          <option value="business">🏢 Бизнес</option>
+          <option value="gift">🎁 Подарок</option>
+          <option value="food">🍔 Еда</option>
+          <option value="transport">🚗 Транспорт</option>
+          <option value="home">🏠 Дом</option>
+          <option value="health">💊 Здоровье</option>
+          <option value="fun">🎮 Развлечения</option>
+          <option value="clothes">👕 Одежда</option>
+          <option value="education">📚 Обучение</option>
+          <option value="project">🚀 Проект</option>
+          <option value="other">📌 Другое</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Описание</label>
+      <textarea id="a-note" placeholder="Подробности..."></textarea>
+    </div>
+    <button class="btn" onclick="addFull()">✅ Сохранить</button>
+  </div>
+</div>
+
+<!-- ====== ЗАПИСИ ====== -->
+<div class="page" id="p-list">
+  <div class="card">
+    <h2><span class="emoji">📝</span>Все записи</h2>
+    <div class="sbox">
+      <input type="text" id="search" placeholder="Поиск: сумма, описание, дата, копилка..." oninput="renderList()">
+    </div>
+    <div class="filters">
+      <button class="btn btn-sm btn2" onclick="setF('all')">Все</button>
+      <button class="btn btn-sm btn2" onclick="setF('income')">💰 Доходы</button>
+      <button class="btn btn-sm btn2" onclick="setF('expense')">💸 Траты</button>
+      <button class="btn btn-sm btn2" onclick="setF('invest')">📊 Вложения</button>
+    </div>
+    <div class="list" id="fullList"></div>
+  </div>
+</div>
+
+<!-- ====== ПРОГНОЗ ====== -->
+<div class="page" id="p-plan">
+  <div class="card">
+    <h2><span class="emoji">🔮</span>Когда смогу позволить?</h2>
+    <p class="hint">Введи сумму — система найдёт дату, когда в копилке будет достаточно, учитывая все запланированные доходы и траты (можно планировать на годы вперёд).</p>
+    <div class="row" style="margin-top:14px">
+      <div class="fg">
+        <label>Хочу потратить (₽)</label>
+        <input type="number" id="fc-amt" placeholder="100000" step="0.01" inputmode="decimal">
+      </div>
+      <div class="fg">
+        <label>Из копилки</label>
+        <select id="fc-jar">
+          <option value="spend">💸 Траты</option>
+          <option value="inv">📈 Инвестиции</option>
+          <option value="sofa">🛋️ На диван</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Горизонт (дней)</label>
+        <input type="number" id="fc-days" value="730" min="1" max="3650">
+      </div>
+    </div>
+    <button class="btn" onclick="forecast()">🔮 Рассчитать</button>
+    <div id="fc-out"></div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">📅</span>Ближайшие запланированные доходы</h2>
+    <div id="calList"></div>
+  </div>
+</div>
+
+<!-- ====== TELEGRAM ====== -->
+<div class="page" id="p-tg">
+  <div class="card">
+    <h2><span class="emoji">🤖</span>Telegram-бот (встроен в сайт)</h2>
+    <p class="hint">Сайт сам является Telegram-ботом! Пока эта вкладка открыта — бот отвечает на команды в Telegram. Данные синхронизируются мгновенно.</p>
+    <div class="fg" style="margin-top:14px">
+      <label>Токен бота (от @BotFather)</label>
+      <input type="text" id="tg-token" placeholder="123456789:AAE...">
+    </div>
+    <p class="hint" style="margin-bottom:10px">
+      1. Открой @BotFather в Telegram → <b>/newbot</b> → получи токен<br>
+      2. Вставь токен выше → нажми «Запустить»<br>
+      3. Напиши боту <b>/start</b> — он ответит
+    </p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="startBot()">▶️ Запустить бота</button>
+      <button class="btn btn2" onclick="stopBot()">⏸️ Остановить</button>
+      <button class="btn btn2" onclick="clearLog()">🧹 Очистить лог</button>
+    </div>
+    <div style="margin-top:16px">
+      <label style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Лог сообщений</label>
+      <div class="tg-log" id="tgLog"><div>Бот не запущен</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">📱</span>Команды бота</h2>
+    <div style="font-size:13px;line-height:1.9;color:var(--muted)">
+      <div><code style="color:var(--accent)">/start</code> — список команд</div>
+      <div><code style="color:var(--accent)">/balance</code> — баланс копилок</div>
+      <div><code style="color:var(--accent)">/income 50000 ЗП</code> — добавить доход</div>
+      <div><code style="color:var(--accent)">/spend 1500 Еда</code> — трата из «Трат»</div>
+      <div><code style="color:var(--accent)">/spend 1500 Еда|inv</code> — трата из «Инвестиций»</div>
+      <div><code style="color:var(--accent)">/invest 10000 Проект|spend</code> — вложение</div>
+      <div><code style="color:var(--accent)">/when 50000</code> — когда смогу потратить</div>
+      <div><code style="color:var(--accent)">/when 50000|inv</code> — из конкретной копилки</div>
+      <div><code style="color:var(--accent)">/list</code> — последние 10 операций</div>
+      <div><code style="color:var(--accent)">/help</code> — помощь</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ИНФО ====== -->
+<div class="page" id="p-info">
+  <div class="card">
+    <h2><span class="emoji">ℹ️</span>Как это работает</h2>
+    <div style="font-size:14px;line-height:1.8;color:var(--muted)">
+      <p><b style="color:var(--text)">📈 Инвестиции (33%)</b> — треть каждого дохода автоматически идёт сюда.</p>
+      <p style="margin-top:8px"><b style="color:var(--text)">🛋️ На диван (10%)</b> — подушка безопасности и крупные цели.</p>
+      <p style="margin-top:8px"><b style="color:var(--text)">💸 Траты (57%)</b> — повседневные расходы.</p>
+      <p style="margin-top:14px"><b style="color:var(--text)">📊 Вложения</b> — когда берёшь из копилки, чтобы вложить в проект. Указывается откуда взял.</p>
+      <p style="margin-top:14px"><b style="color:var(--text)">🔮 Прогноз</b> — введи сумму и узнай точную дату, когда сможешь её потратить. Система учтёт все запланированные доходы и траты на годы вперёд.</p>
+      <p style="margin-top:14px"><b style="color:var(--text)">🔍 Поиск</b> — ищет по описанию, сумме, дате, категории, копилке.</p>
+      <p style="margin-top:14px"><b style="color:var(--text)">🤖 Telegram-бот</b> — встроен прямо в сайт. Пока вкладка открыта — бот работает. Пишешь боту → меняется на сайте. Меняешь на сайте → бот видит.</p>
+      <p style="margin-top:14px"><b style="color:var(--text)">📥 Бэкап</b> — скачай JSON → загрузи на другом устройстве.</p>
+      <p style="margin-top:14px;color:var(--amber)">⚠️ Данные хранятся в браузере (localStorage). Регулярно делай бэкапы!</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="emoji">🗑️</span>Опасная зона</h2>
+    <button class="btn btn-r" onclick="clearAll()">Удалить все данные</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- MOBILE NAV -->
+<nav class="mnav">
+  <button class="on" data-p="dash"><span class="mi">📊</span>Главная</button>
+  <button data-p="add"><span class="mi">➕</span>Добавить</button>
+  <button data-p="list"><span class="mi">📝</span>Записи</button>
+  <button data-p="plan"><span class="mi">🔮</span>Прогноз</button>
+  <button data-p="tg"><span class="mi">🤖</span>Бот</button>
+</nav>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="x-btn" onclick="closeModal()">✕</button>
+    <h2>✏️ Редактирование</h2>
+    <div class="row">
+      <div class="fg">
+        <label>Тип</label>
+        <select id="e-type" onchange="toggleEFrom()">
+          <option value="income">💰 Доход</option>
+          <option value="expense">💸 Трата</option>
+          <option value="invest">📊 Вложение</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Сумма</label>
+        <input type="number" id="e-amt" step="0.01">
+      </div>
+      <div class="fg">
+        <label>Дата</label>
+        <input type="date" id="e-date">
+      </div>
+    </div>
+    <div class="row">
+      <div class="fg" id="e-from-w" style="display:none">
+        <label>Из копилки</label>
+        <select id="e-from">
+          <option value="spend">💸 Траты</option>
+          <option value="inv">📈 Инвестиции</option>
+          <option value="sofa">🛋️ На диван</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Категория</label>
+        <select id="e-cat">
+          <option value="">—</option>
+          <option value="salary">💼 Зарплата</option>
+          <option value="freelance">💻 Фриланс</option>
+          <option value="business">🏢 Бизнес</option>
+          <option value="gift">🎁 Подарок</option>
+          <option value="food">🍔 Еда</option>
+          <option value="transport">🚗 Транспорт</option>
+          <option value="home">🏠 Дом</option>
+          <option value="health">💊 Здоровье</option>
+          <option value="fun">🎮 Развлечения</option>
+          <option value="clothes">👕 Одежда</option>
+          <option value="education">📚 Обучение</option>
+          <option value="project">🚀 Проект</option>
+          <option value="other">📌 Другое</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Описание</label>
+      <textarea id="e-note"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="saveEdit()">💾 Сохранить</button>
+      <button class="btn btn-r" onclick="delEdit()">🗑️ Удалить</button>
+      <button class="btn btn2" onclick="closeModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== DATA ========== */
+const KEY='fintrek_v3';
+let D={entries:[],settings:{tgToken:'',tgOffset:0}};
+const JN={inv:'Инвестиции',sofa:'На диван',spend:'Траты'};
+const CATS={salary:'💼 Зарплата',freelance:'💻 Фриланс',business:'🏢 Бизнес',gift:'🎁 Подарок',food:'🍔 Еда',transport:'🚗 Транспорт',home:'🏠 Дом',health:'💊 Здоровье',fun:'🎮 Развлечения',clothes:'👕 Одежда',education:'📚 Обучение',project:'🚀 Проект',other:'📌 Другое'};
+const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n||0)+' ₽';
+const fmtD=d=>{const p=d.split('-');return p[2]+'.'+p[1]+'.'+p[0]};
+const fmtDFull=d=>new Date(d+'T00:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
+
+function load(){try{const s=localStorage.getItem(KEY);if(s)D=JSON.parse(s)}catch(e){}if(!D.entries)D.entries=[];if(!D.settings)D.settings={tgToken:'',tgOffset:0}}
+function save(){localStorage.setItem(KEY,JSON.stringify(D))}
+function toast(m,t='ok'){const e=document.getElementById('toast');e.textContent=m;e.className='toast on '+t;setTimeout(()=>e.className='toast',2400)}
+
+/* ========== BALANCES ========== */
+function calcBal(entries){
+  const b={inv:0,sofa:0,spend:0};
+  const sorted=[...(entries||D.entries)].sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));
+  for(const e of sorted){
+    if(e.type==='income'){b.inv+=e.amount*.33;b.sofa+=e.amount*.10;b.spend+=e.amount*.57}
+    else{const j=e.fromJar||'spend';b[j]-=e.amount}
+  }
+  return b;
+}
+
+/* ========== RENDER ========== */
+function renderDash(){
+  const b=calcBal();
+  document.getElementById('j-inv').textContent=fmt(b.inv);
+  document.getElementById('j-sofa').textContent=fmt(b.sofa);
+  document.getElementById('j-spend').textContent=fmt(b.spend);
+  let ti=0,te=0,tv=0;
+  for(const e of D.entries){
+    if(e.type==='income')ti+=e.amount;
+    else if(e.type==='expense')te+=e.amount;
+    else tv+=e.amount;
+  }
+  document.getElementById('s-inc').textContent=fmt(ti);
+  document.getElementById('s-exp').textContent=fmt(te);
+  document.getElementById('s-inv').textContent=fmt(tv);
+  document.getElementById('s-all').textContent=fmt(b.inv+b.sofa+b.spend);
+
+  // Подсчет операций по копилкам (доход распределяется на 3, трата/вложение — в одну)
+  const c={inv:0,sofa:0,spend:0};
+  for(const e of D.entries){
+    if(e.type==='income'){c.inv++;c.sofa++;c.spend++}
+    else c[e.fromJar||'spend']++;
+  }
+  document.getElementById('jc-inv').textContent=c.inv+' операций';
+  document.getElementById('jc-sofa').textContent=c.sofa+' операций';
+  document.getElementById('jc-spend').textContent=c.spend+' операций';
+
+  const recent=[...D.entries].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id)).slice(0,6);
+  document.getElementById('recentList').innerHTML=recent.length?recent.map(e=>entHTML(e)).join(''):'<div class="empty">Пока пусто. Добавь первую запись или напиши боту /income</div>';
+}
+
+function entHTML(e){
+  const cls=e.type==='income'?'inc':e.type==='expense'?'exp':'inv';
+  const ico=e.type==='income'?'💰':e.type==='expense'?'💸':'📊';
+  const sign=e.type==='income'?'+':'−';
+  const from=(e.type!=='income'&&e.fromJar)?' из '+JN[e.fromJar]:'';
+  const cat=e.cat&&CATS[e.cat]?' • '+CATS[e.cat]:'';
+  return `<div class="ent ${cls}" onclick="openEdit('${e.id}')">
+    <div class="ent-ico">${ico}</div>
+    <div class="ent-body">
+      <div class="ent-title">${e.note||'(без описания)'}</div>
+      <div class="ent-meta">
+        <span>📅 ${fmtD(e.date)}</span>
+        <span class="badge ${cls}">${e.type==='income'?'доход':e.type==='expense'?'трата':'вложение'}</span>
+        ${from?'<span>📦'+from+'</span>':''}${cat}
+      </div>
+    </div>
+    <div class="ent-amt">${sign}${fmt(e.amount)}</div>
+  </div>`;
+}
+
+let curFilter='all';
+function setF(f){curFilter=f;renderList()}
+function renderList(){
+  const q=(document.getElementById('search').value||'').toLowerCase().trim();
+  let items=[...D.entries].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id));
+  if(curFilter!=='all')items=items.filter(e=>e.type===curFilter);
+  if(q){
+    items=items.filter(e=>
+      (e.note||'').toLowerCase().includes(q)||
+      String(e.amount).includes(q)||
+      e.date.includes(q)||
+      fmtD(e.date).includes(q)||
+      (JN[e.fromJar]||'').toLowerCase().includes(q)||
+      (CATS[e.cat]||'').toLowerCase().includes(q)
+    );
+  }
+  const el=document.getElementById('fullList');
+  el.innerHTML=items.length?items.map(e=>entHTML(e)).join(''):'<div class="empty">Ничего не найдено</div>';
+}
+
+function renderCal(){
+  const now=today();
+  const up=D.entries.filter(e=>e.type==='income'&&e.date>=now).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,20);
+  const el=document.getElementById('calList');
+  if(!up.length){el.innerHTML='<div class="empty">Нет запланированных доходов. Добавь доход с будущей датой — через сайт или бота.</div>';return}
+  el.innerHTML=up.map(e=>`
+    <div class="fc-item" style="background:var(--bg3);border:1px solid var(--border);margin-bottom:6px">
+      <span>💰 ${e.note||'Доход'} <span style="color:var(--muted);font-size:11px">• ${fmtDFull(e.date)}</span></span>
+      <b style="color:var(--green)">+${fmt(e.amount)}</b>
+    </div>`).join('');
+}
+
+function renderAll(){renderDash();renderList();renderCal()}
+
+/* ========== FORMS ========== */
+function toggleQFrom(){
+  const t=document.getElementById('q-type').value;
+  document.getElementById('q-from-w').style.display=(t!=='income')?'':'none';
+}
+function toggleAFrom(){
+  const t=document.getElementById('a-type').value;
+  document.getElementById('a-from-w').style.display=(t!=='income')?'':'none';
+}
+function toggleEFrom(){
+  const t=document.getElementById('e-type').value;
+  document.getElementById('e-from-w').style.display=(t!=='income')?'':'none';
+}
+
+function addEntry(){
+  const type=document.getElementById('q-type').value;
+  const amount=parseFloat(document.getElementById('q-amt').value);
+  const date=document.getElementById('q-date').value||today();
+  const note=document.getElementById('q-note').value.trim();
+  if(!amount||amount<=0){toast('Введи сумму','err');return}
+  const e={id:uid(),type,amount,date,note};
+  if(type!=='income')e.fromJar=document.getElementById('q-from').value;
+  D.entries.push(e);save();
+  document.getElementById('q-amt').value='';document.getElementById('q-note').value='';
+  renderAll();toast('✅ Запись добавлена');
+}
+
+function addFull(){
+  const type=document.getElementById('a-type').value;
+  const amount=parseFloat(document.getElementById('a-amt').value);
+  const date=document.getElementById('a-date').value||today();
+  const note=document.getElementById('a-note').value.trim();
+  const cat=document.getElementById('a-cat').value;
+  if(!amount||amount<=0){toast('Введи сумму','err');return}
+  const e={id:uid(),type,amount,date,note,cat};
+  if(type!=='income')e.fromJar=document.getElementById('a-from').value;
+  D.entries.push(e);save();
+  document.getElementById('a-amt').value='';document.getElementById('a-note').value='';document.getElementById('a-cat').value='';
+  renderAll();toast('✅ Запись сохранена');
+  goTab('dash');
+}
+
+/* ========== EDIT ========== */
+let editId=null;
+function openEdit(id){
+  const e=D.entries.find(x=>x.id===id);if(!e)return;
+  editId=id;
+  document.getElementById('e-type').value=e.type;
+  document.getElementById('e-amt').value=e.amount;
+  document.getElementById('e-date').value=e.date;
+  document.getElementById('e-note').value=e.note||'';
+  document.getElementById('e-cat').value=e.cat||'';
+  if(e.fromJar)document.getElementById('e-from').value=e.fromJar;
+  toggleEFrom();
+  document.getElementById('modal').classList.add('on');
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');editId=null}
+function saveEdit(){
+  const e=D.entries.find(x=>x.id===editId);if(!e)return;
+  e.type=document.getElementById('e-type').value;
+  e.amount=parseFloat(document.getElementById('e-amt').value)||0;
+  e.date=document.getElementById('e-date').value||today();
+  e.note=document.getElementById('e-note').value.trim();
+  e.cat=document.getElementById('e-cat').value;
+  if(e.type!=='income')e.fromJar=document.getElementById('e-from').value;else delete e.fromJar;
+  save();closeModal();renderAll();toast('✅ Сохранено');
+}
+function delEdit(){
+  if(!confirm('Удалить запись?'))return;
+  D.entries=D.entries.filter(x=>x.id!==editId);
+  save();closeModal();renderAll();toast('🗑️ Удалено');
+}
+
+/* ========== FORECAST ========== */
+function forecast(){
+  const amount=parseFloat(document.getElementById('fc-amt').value);
+  const jar=document.getElementById('fc-jar').value;
+  const horizon=parseInt(document.getElementById('fc-days').value)||730;
+  const out=document.getElementById('fc-out');
+  if(!amount||amount<=0){out.innerHTML='<div class="empty">Введи сумму</div>';return}
+
+  const now=new Date();now.setHours(0,0,0,0);
+  const td=now.toISOString().slice(0,10);
+  const past=D.entries.filter(e=>e.date<=td);
+  const future=D.entries.filter(e=>e.date>td);
+
+  const b=calcBal(past);
+
+  if(b[jar]>=amount){
+    out.innerHTML=`<div class="fc-box"><h3>🎉 Уже можешь!</h3><div class="fc-date">Сегодня</div><p>В «${JN[jar]}» сейчас ${fmt(b[jar])}, а нужно ${fmt(amount)}.</p></div>`;
+    return;
+  }
+
+  const byDate={};
+  for(const e of future){if(!byDate[e.date])byDate[e.date]=[];byDate[e.date].push(e)}
+
+  let d=new Date(now);d.setDate(d.getDate()+1);
+  const trace=[];
+  const end=new Date(now);end.setDate(end.getDate()+horizon);
+
+  while(d<=end){
+    const ds=d.toISOString().slice(0,10);
+    for(const e of(byDate[ds]||[])){
+      if(e.type==='income'){
+        b.inv+=e.amount*.33;b.sofa+=e.amount*.10;b.spend+=e.amount*.57;
+        trace.push({date:ds,type:'income',amount:e.amount,note:e.note});
+      }else{
+        b[e.fromJar||'spend']-=e.amount;
+        trace.push({date:ds,type:e.type,amount:e.amount,note:e.note,jar:e.fromJar});
+      }
+    }
+    if(b[jar]>=amount){
+      const rel=trace.filter(t=>t.date<=ds);
+      const days=Math.ceil((d-now)/864e5);
+      out.innerHTML=`
+        <div class="fc-box">
+          <h3>🎯 Сможешь позволить</h3>
+          <div class="fc-date">${fmtDFull(ds)}</div>
+          <p>Через <b>${days}</b> ${days===1?'день':days<5?'дня':'дней'} в «${JN[jar]}» будет ${fmt(b[jar])}.</p>
+          <div class="fc-list">
+            <div style="font-size:12px;opacity:.85;margin-top:4px">Что приведёт к этому:</div>
+            ${rel.slice(-12).map(t=>`
+              <div class="fc-item">
+                <span>${t.type==='income'?'💰':'💸'} ${t.note||'операция'}${t.jar?' (из '+JN[t.jar]+')':''} <span style="opacity:.6">• ${fmtD(t.date)}</span></span>
+                <b>${t.type==='income'?'+':'−'}${fmt(t.amount)}</b>
+              </div>`).join('')}
+            ${rel.length>12?`<div class="fc-item" style="opacity:.6">... и ещё ${rel.length-12} операций</div>`:''}
+          </div>
+        </div>`;
+      return;
+    }
+    d.setDate(d.getDate()+1);
+  }
+  out.innerHTML=`<div class="fc-box" style="background:linear-gradient(135deg,#ff5c7a,#d63355)"><h3>⚠️ Не хватит за ${horizon} дней</h3><p>К концу периода в «${JN[jar]}» будет ${fmt(b[jar])}. Добавь планируемые доходы.</p></div>`;
+}
+
+/* ========== TABS ========== */
+function goTab(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  document.querySelectorAll('.tab,.mnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  if(p==='list')renderList();
+  if(p==='plan')renderCal();
+  if(p==='tg'){document.getElementById('tg-token').value=D.settings.tgToken||'';updateBotUI()}
+}
+document.querySelectorAll('.tab,.mnav button').forEach(b=>b.addEventListener('click',()=>goTab(b.dataset.p)));
+
+/* ========== EXPORT/IMPORT ========== */
+function exportData(){
+  const blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='fintrek_'+today()+'.json';a.click();toast('📥 Бэкап скачан');
+}
+function importData(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data.entries))throw new Error('Формат');
+      if(confirm('Заменить данные? (Отмена = добавить к текущим)'))D=data;
+      else D.entries.push(...data.entries);
+      save();renderAll();toast('✅ Импортировано');
+    }catch(err){toast('Ошибка файла','err')}
+  };
+  r.readAsText(f);ev.target.value='';
+}
+function clearAll(){
+  if(!confirm('Удалить ВСЕ данные? Необратимо!'))return;
+  if(!confirm('Точно удалить?'))return;
+  D={entries:[],settings:D.settings};save();renderAll();toast('🗑️ Очищено');
+}
+
+/* ========== TELEGRAM BOT ========== */
+let botTimer=null,botRunning=false;
+const TG_API='https://api.telegram.org/bot';
+
+function logTg(cls,msg){
+  const el=document.getElementById('tgLog');
+  const d=document.createElement('div');
+  d.className=cls;
+  const t=new Date().toLocaleTimeString('ru-RU');
+  d.textContent=`[${t}] ${msg}`;
+  el.insertBefore(d,el.firstChild);
+  while(el.children.length>50)el.removeChild(el.lastChild);
+}
+
+function updateBotUI(){
+  const dot=document.getElementById('botDot');
+  const lbl=document.getElementById('botLabel');
+  if(botRunning){dot.className='bot-dot on';lbl.textContent='Бот работает'}
+  else if(D.settings.tgToken){dot.className='bot-dot wait';lbl.textContent='Бот ожидает'}
+  else{dot.className='bot-dot';lbl.textContent='Бот выкл'}
+}
+
+async function tgApi(method,body){
+  const url=TG_API+D.settings.tgToken+'/'+method;
+  const opt={method:'POST',headers:{'Content-Type':'application/json'}};
+  if(body)opt.body=JSON.stringify(body);
+  const r=await fetch(url,opt);
+  return r.json();
+}
+
+async function startBot(){
+  const token=document.getElementById('tg-token').value.trim();
+  if(!token){toast('Введи токен','err');return}
+  D.settings.tgToken=token;
+  save();
+  if(botTimer)clearInterval(botTimer);
+  botRunning=true;
+  updateBotUI();
+  logTg('out','Бот запущен. Ожидание сообщений...');
+  // Сразу получим offset
+  try{
+    const r=await tgApi('getUpdates',{offset:-1,timeout:0});
+    if(r.ok&&r.result&&r.result.length){
+      D.settings.tgOffset=r.result[r.result.length-1].update_id+1;
+      save();
+    }
+  }catch(e){logTg('err','Ошибка запуска: '+e.message);botRunning=false;updateBotUI();return}
+  botTimer=setInterval(pollTg,2500);
+  pollTg();
+}
+
+function stopBot(){
+  if(botTimer){clearInterval(botTimer);botTimer=null}
+  botRunning=false;
+  updateBotUI();
+  logTg('out','Бот остановлен');
+}
+
+async function pollTg(){
+  if(!botRunning||!D.settings.tgToken)return;
+  try{
+    const r=await tgApi('getUpdates',{offset:D.settings.tgOffset||0,timeout:1});
+    if(!r.ok){
+      if(r.description&&r.description.includes('Unauthorized')){
+        logTg('err','Неверный токен! Бот остановлен.');stopBot();
+      }
+      return;
+    }
+    if(!r.result||!r.result.length)return;
+    for(const u of r.result){
+      D.settings.tgOffset=u.update_id+1;
+      if(u.message&&u.message.text){
+        const txt=u.message.text;
+        const chatId=u.message.chat.id;
+        const from=u.message.from.first_name||'';
+        logTg('in',`← @${u.message.from.username||from}: ${txt}`);
+        const reply=await handleTgCommand(txt,from);
+        if(reply){
+          await tgApi('sendMessage',{chat_id:chatId,text:reply,parse_mode:'Markdown'});
+          logTg('out',`→ ${reply.slice(0,80)}${reply.length>80?'...':''}`);
+        }
+      }
+    }
+    save();
+  }catch(e){
+    logTg('err','Ошибка polling: '+e.message);
+  }
+}
+
+async function handleTgCommand(text,userName){
+  const parts=text.trim().split(/\s+/);
+  const cmd=parts[0].toLowerCase();
+  const args=parts.slice(1);
+
+  if(cmd==='/start'||cmd==='/help'){
+    return `👋 Привет${userName?', '+userName:''}! Я твой финансовый бот.\n\n`+
+      `📊 */balance* — баланс копилок\n`+
+      `💰 */income 50000 ЗП* — доход\n`+
+      `💸 */spend 1500 Еда* — трата\n`+
+      `💸 */spend 1500 Еда|inv* — из Инвестиций\n`+
+      `📊 */invest 10000 Проект|spend* — вложение\n`+
+      `🔮 */when 50000* — когда смогу потратить\n`+
+      `🔮 */when 50000|inv* — из Инвестиций\n`+
+      `📝 */list* — последние 10 операций`;
+  }
+  if(cmd==='/balance'){
+    const b=calcBal();
+    const total=b.inv+b.sofa+b.spend;
+    return `💰 *Баланс копилок:*\n\n`+
+      `📈 Инвестиции: \`${fmt(b.inv)}\`\n`+
+      `🛋️ На диван: \`${fmt(b.sofa)}\`\n`+
+      `💸 Траты: \`${fmt(b.spend)}\`\n\n`+
+      `💎 *Всего:* \`${fmt(total)}\``;
+  }
+  if(cmd==='/income'){
+    if(!args.length)return '❌ Формат: /income 50000 ЗП';
+    const amount=parseFloat(args[0]);
+    if(isNaN(amount)||amount<=0)return '❌ Сумма должна быть числом';
+    const note=args.slice(1).join(' ')||'Доход';
+    D.entries.push({id:uid(),type:'income',amount,date:today(),note});
+    save();renderAll();
+    return `✅ Доход +${fmt(amount)} записан\n📝 ${note}`;
+  }
+  if(cmd==='/spend'||cmd==='/expense'){
+    if(!args.length)return '❌ Формат: /spend 1500 Еда|spend';
+    const amount=parseFloat(args[0]);
+    if(isNaN(amount)||amount<=0)return '❌ Сумма — число';
+    const rest=args.slice(1).join(' ');
+    let note=rest,jar='spend';
+    if(rest.includes('|')){const p=rest.split('|');note=p[0].trim();jar=(p[1]||'spend').trim()}
+    if(!['inv','sofa','spend'].includes(jar))jar='spend';
+    note=note||'Трата';
+    D.entries.push({id:uid(),type:'expense',amount,fromJar:jar,date:today(),note});
+    save();renderAll();
+    return `✅ Трата −${fmt(amount)} из «${JN[jar]}»\n📝 ${note}`;
+  }
+  if(cmd==='/invest'){
+    if(!args.length)return '❌ Формат: /invest 10000 Проект|spend';
+    const amount=parseFloat(args[0]);
+    if(isNaN(amount)||amount<=0)return '❌ Сумма — число';
+    const rest=args.slice(1).join(' ');
+    let note=rest,jar='spend';
+    if(rest.includes('|')){const p=rest.split('|');note=p[0].trim();jar=(p[1]||'spend').trim()}
+    if(!['inv','sofa','spend'].includes(jar))jar='spend';
+    note=note||'Вложение';
+    D.entries.push({id:uid(),type:'invest',amount,fromJar:jar,date:today(),note});
+    save();renderAll();
+    return `✅ Вложение −${fmt(amount)} из «${JN[jar]}»\n📝 ${note}`;
+  }
+  if(cmd==='/when'){
+    if(!args.length)return '❌ Формат: /when 50000 или /when 50000|inv';
+    const first=args[0];
+    let amount,jar='spend';
+    if(first.includes('|')){const p=first.split('|');amount=parseFloat(p[0]);jar=(p[1]||'spend').trim()}
+    else amount=parseFloat(first);
+    if(isNaN(amount)||amount<=0)return '❌ Сумма — число';
+    if(!['inv','sofa','spend'].includes(jar))jar='spend';
+
+    const now=new Date();now.setHours(0,0,0,0);
+    const td=now.toISOString().slice(0,10);
+    const past=D.entries.filter(e=>e.date<=td);
+    const future=D.entries.filter(e=>e.date>td);
+    const b=calcBal(past);
+    if(b[jar]>=amount)return `🎉 Уже можешь! В «${JN[jar]}» сейчас ${fmt(b[jar])}`;
+
+    const byDate={};
+    for(const e of future){if(!byDate[e.date])byDate[e.date]=[];byDate[e.date].push(e)}
+    let d=new Date(now);d.setDate(d.getDate()+1);
+    const end=new Date(now);end.setDate(end.getDate()+730);
+    while(d<=end){
+      const ds=d.toISOString().slice(0,10);
+      for(const e of(byDate[ds]||[])){
+        if(e.type==='income'){b.inv+=e.amount*.33;b.sofa+=e.amount*.10;b.spend+=e.amount*.57}
+        else b[e.fromJar||'spend']-=e.amount;
+      }
+      if(b[jar]>=amount){
+        const days=Math.ceil((d-now)/864e5);
+        return `🎯 *${fmtDFull(ds)}* (через ${days} дн.)\nВ «${JN[jar]}» будет ${fmt(b[jar])}`;
+      }
+      d.setDate(d.getDate()+1);
+    }
+    return `⚠️ В ближайшие 2 года не получится. Добавь планируемые доходы.`;
+  }
+  if(cmd==='/list'){
+    const recent=[...D.entries].sort((a,b)=>b.date.localeCompare(a.date)||b.id.localeCompare(a.id)).slice(0,10);
+    if(!recent.length)return '📝 Пока нет операций';
+    return '📝 *Последние операции:*\n\n'+recent.map(e=>{
+      const ico=e.type==='income'?'💰':e.type==='expense'?'💸':'📊';
+      const sign=e.type==='income'?'+':'−';
+      const from=e.fromJar?' ('+JN[e.fromJar]+')':'';
+      return `${ico} ${fmtD(e.date)} • ${sign}${fmt(e.amount)}${from}\n   _${(e.note||'').replace(/[_*[\]()~`>#+\-=|{}.!]/g,'\\$&')}_`;
+    }).join('\n\n');
+  }
+  return '❓ Неизвестная команда. Напиши /help';
+}
+
+function clearLog(){document.getElementById('tgLog').innerHTML='<div>Лог очищен</div>'}
+
+/* ========== INIT ========== */
+load();
+document.getElementById('q-date').value=today();
+document.getElementById('a-date').value=today();
+document.getElementById('hdrDate').textContent=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+renderAll();
+if(D.settings.tgToken){
+  document.getElementById('tg-token').value=D.settings.tgToken;
+  // Автозапуск бота если был токен
+  updateBotUI();
+}
+</script>
+</body>
+</html>
